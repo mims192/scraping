@@ -1,4 +1,6 @@
 import puppeteer from 'puppeteer';
+import fs from 'fs';
+import path from 'path';
 
 const scrapeStocksToWatch = async () => {
   const browser = await puppeteer.launch({
@@ -39,9 +41,22 @@ const scrapeStocksToWatch = async () => {
 
     if (articleUrl) {
       const articlePage = await browser.newPage();
-      await articlePage.goto(articleUrl);
-      await articlePage.waitForSelector('p', { timeout: 120000 });
-      await articlePage.screenshot({ path: 'screenshot.png' });
+
+      try {
+        await articlePage.goto(articleUrl, {
+          waitUntil: 'networkidle2',
+          timeout: 120000
+        });
+        await articlePage.waitForSelector('p', { timeout: 120000 });
+      } catch (e) {
+        console.log('Page load or selector wait failed:', e);
+      }
+
+      // Save screenshot regardless of scraping success
+      const screenshotPath = path.join(process.cwd(), 'screenshot.png');
+      await articlePage.screenshot({ path: screenshotPath });
+      console.log('Screenshot saved at:', screenshotPath);
+      console.log('Exists:', fs.existsSync(screenshotPath));
 
       const data = await articlePage.evaluate(() => {
         const allP = Array.from(document.querySelectorAll('p'));
