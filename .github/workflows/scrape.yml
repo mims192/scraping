@@ -43,7 +43,8 @@ jobs:
       - name: Install project dependencies
         run: npm install
       -  name: Upload Puppeteer Screenshot
-         uses: actions/upload-artifact@v3
+         uses: actions/upload-artifact@v3.1.3
+
          with:
           name: debug-screenshot
           path: screenshot.png
