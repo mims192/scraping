@@ -28,7 +28,7 @@ const scrapeStocksToWatch = async () => {
     });
 
     console.log('Waiting for selector...');
-    await page.waitForSelector('#newslist-0 h2 a', { timeout: 30000 });
+    await page.waitForSelector('#newslist-0 h2 a', { timeout: 120000 });
 
     const articleUrl = await page.evaluate(() => {
       const firstAnchor = document.querySelector('#newslist-0 h2 a');
@@ -40,7 +40,8 @@ const scrapeStocksToWatch = async () => {
     if (articleUrl) {
       const articlePage = await browser.newPage();
       await articlePage.goto(articleUrl);
-      await articlePage.waitForSelector('p', { timeout: 30000 });
+      await articlePage.waitForSelector('p', { timeout: 120000 });
+      await articlePage.screenshot({ path: 'screenshot.png' });
 
       const data = await articlePage.evaluate(() => {
         const allP = Array.from(document.querySelectorAll('p'));
