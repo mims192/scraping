@@ -2,7 +2,7 @@ import puppeteer from 'puppeteer';
 
 const scrapeStocksToWatch = async () => {
   const browser = await puppeteer.launch({
-    headless: new,
+    headless: 'new',
     args: [
       '--no-sandbox',
       '--disable-setuid-sandbox',
